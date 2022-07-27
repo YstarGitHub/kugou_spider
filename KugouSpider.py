@@ -89,7 +89,7 @@ class KugouSpider(object):
                         return response.text
                 except Exception as e:
                     print(proxy, "无效")
-                    print(e)
+                    # print(e)
             time.sleep(3)
 
     def insert_mysql(self):
@@ -137,7 +137,8 @@ class KugouSpider(object):
             dt = datetime.datetime.now().strftime("%Y-%m-%d")
             response = spider.get_response_1(url)
             # 判断代理请求的结果，若无数据则走本地请求
-            if response is None:
+            if response is None or "filename" not in response:
+                print("代理无效或代理进小黑屋")
                 response = spider.get_response_0(url)
             # 处理数据
             infos = re.findall('"filename":"(.*?)"', response)
@@ -149,11 +150,17 @@ class KugouSpider(object):
                 singer = i.split("-", 2)[0].strip()
                 self.music_info.append([m, n, song, singer, j, csv_name, dt])
                 self.music_info_csv.append([m, n, song, singer, j, csv_name, dt])
-            spider.insert_mysql()
-            print(csv_name, "SQL存储已完成")
+            if len(self.music_info) != 0:
+                spider.insert_mysql()
+                print(csv_name, "SQL存储已完成")
+            else:
+                print("SQL无数据")
             time.sleep(3)
-        spider.csv()
-        print("CSV存储已完成")
+        if len(self.music_info_csv) != 0:
+            spider.csv()
+            print("CSV存储已完成")
+        else:
+            print("CSV无数据")
 
 
 if __name__ == '__main__':
