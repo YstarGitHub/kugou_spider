@@ -96,7 +96,7 @@ class KugouSpider(object):
         """
             数据库存储
         """
-        db = pymysql.connect(host='localhost', user='root', password='abc7811066', database='kugou_music')
+        db = pymysql.connect(host='localhost', user='root', password='******', database='kugou_music')
         cursor = db.cursor()
         sql = "INSERT INTO music_info(排名,上次排名,歌名,歌手,会员,歌曲分类,更新时间) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         try:
